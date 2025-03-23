@@ -1,0 +1,158 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    background-color: #a4c1d4; /* Matches the sidebar background */
+}
+
+/* Main container */
+.main-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+/* Sidebar (Left Panel) */
+.menu-main {
+    width: 30%;
+    background-color: #e8c6c6;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Dropdowns and Filters */
+.filter-section {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.filter-section label {
+    font-weight: bold;
+}
+
+.filter-section select,
+.filter-section input {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #999;
+    width: 48%;
+}
+
+/* Information Box */
+.info-box {
+    width: 100%;
+    height: 150px;
+   /* background: white;*/
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* CSV Drop Zone */
+.dropZone {
+    width: 90%;
+    padding: 10px;
+    border: 2px dashed #666;
+    text-align: center;
+    background: #f4f4f4;
+    border-radius: 5px;
+    margin-top: auto;
+    margin-bottom: 10px;
+}
+
+/* Bottom Section (Clear Button & Total Count) */
+.bottom-section {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    align-items: center;
+}
+
+#total-label {
+    font-weight: bold;
+}
+
+.clear-button {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.clear-button:hover {
+    background-color: #c9302c;
+}
+
+/* Map Section */
+#map {
+    flex-grow: 1;
+    height: 100%;
+    border-radius: 10px;
+    margin: 10px;
+}
+#pointsList {
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: left;
+    overflow-y: auto;
+    max-height: 200px;
+}
+
+.point-item {
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    margin: 5px 0;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.point-item strong {
+    font-size: 16px;
+}
+
+.espai {
+    background: #d9f2d9;
+    border-left: 5px solid green;
+}
+
+.atraccio {
+    background: #f9e79f;
+    border-left: 5px solid orange;
+}
+
+.museu {
+    background: #d6eaf8;
+    border-left: 5px solid blue;
+}
+
+.no-info {
+    font-style: italic;
+    color: #777;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    color: darkred;
+}

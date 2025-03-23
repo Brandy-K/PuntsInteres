@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-container">
+
+        <div class="menu-main">
+            <h2>Gestió de CSV</h2>
+            <div class="filter-section">
+                <label>Tipus:</label>
+                <select id="tipus">
+                    <option value="option1">Tots</option>
+                    <option value="option2">Espai</option>
+                    <option value="option3">Atraccio</option>
+                    <option value="option4">Museu</option>
+                </select>
+                
+                <label>Ordenació:</label>
+                <select id="ordenacio">
+                    <option value="asc">Ascendent</option>
+                    <option value="desc">Descendent</option>
+                </select>
+               
+            </div>
+            <div id="countryFlag">Pais:</div>
+            <input type="text" id="search" placeholder="Filtrar per nom...">
+            <div id="pointsList" class="info-box">
+                No hi ha informació per mostrar
+            </div>
+            
+            <div class="dropZone">Arrossegar un fitxer CSV aquí per carregar la informació</div>
+            <div class="bottom-section">
+                <p id="total-label">Número total:</p>
+                <button class="clear-button">Netejar tot</button>
+            </div>
+        </div>
+        <div id="map"></div>
+    </div>
+    <script src="const.js"></script>
+    <script src="puntInteres.js"></script>
+    <script src="Mapa.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
