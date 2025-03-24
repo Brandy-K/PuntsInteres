@@ -2,18 +2,19 @@ class Mapa {
     #map;
     #currentLat;
     #currentLong;
+    #markers = []; 
 
     constructor() {
         const mapCenter = [41.3851, 2.1734]; // punt inital
         const zoomLevel = 13;
-        
+
         this.#map = L.map('map').setView(mapCenter, zoomLevel);
-        const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
-            attribution: '&copy; OpenStreetMap contributors' 
+        const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
         });
         tileLayer.addTo(this.#map);
 
-        // Get user location
+        // mostar location
         this.#getPosicioActual();
     }
 
@@ -41,6 +42,24 @@ class Mapa {
         this.#map.eachLayer(layer => {
             if (layer instanceof L.Marker) {
                 this.#map.removeLayer(layer);
+            }
+        });
+    }
+//mostra punts Interes en mapa
+    mostrarPunts(pointsOfInterest) {
+
+        this.#markers.forEach(marker => this.#map.removeLayer(marker));
+        this.#markers = [];
+
+        pointsOfInterest.forEach(point => {
+            if (point.latitud && point.longitud) {
+                const marker = L.marker([point.latitud, point.longitud]).addTo(this.#map);
+                marker.bindPopup(`
+                    <strong>${point.nom}</strong><br>
+                    ${point.direccio}
+                `);
+
+                this.#markers.push(marker);
             }
         });
     }

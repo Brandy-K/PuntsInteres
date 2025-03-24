@@ -64,7 +64,7 @@ body {
     padding: 10px;
     border: 2px dashed #666;
     text-align: center;
-    background: #f4f4f4;
+    background: grey;
     border-radius: 5px;
     margin-top: auto;
     margin-bottom: 10px;
@@ -117,13 +117,22 @@ body {
     margin: 5px 0;
     font-size: 14px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .point-item strong {
     font-size: 16px;
+    font-weight: bold;
+    display: block;
 }
+
+.point-item p {
+    font-size: 14px;
+    margin: 2px 0 0;
+    color: #555;
+}
+
 
 .espai {
     background: #d9f2d9;
@@ -156,3 +165,4 @@ body {
 .delete-btn:hover {
     color: darkred;
 }
+
