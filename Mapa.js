@@ -46,23 +46,45 @@ class Mapa {
         });
     }
 //mostra punts Interes en mapa
-    mostrarPunts(pointsOfInterest) {
-
-        this.#markers.forEach(marker => this.#map.removeLayer(marker));
-        this.#markers = [];
-
-        pointsOfInterest.forEach(point => {
-            if (point.latitud && point.longitud) {
-                const marker = L.marker([point.latitud, point.longitud]).addTo(this.#map);
-                marker.bindPopup(`
-                    <strong>${point.nom}</strong><br>
-                    ${point.direccio}
-                `);
-
-                this.#markers.push(marker);
-            }
-        });
+mostrarPunts(pointsOfInterest) {
+    if (!pointsOfInterest || pointsOfInterest.length === 0) {
+        console.warn("No valid points of interest provided.");
+        return;
     }
+
+    // Debugging: Check if pointsOfInterest is correctly passed
+    console.log("Received pointsOfInterest:", pointsOfInterest);
+
+    // Remove old markers
+    this.#markers.forEach(marker => this.#map.removeLayer(marker));
+    this.#markers = [];
+
+    let bounds = [];
+
+    pointsOfInterest.forEach(point => {
+
+        const lat = parseFloat(point.latitud);
+        const lon = parseFloat(point.longitud);
+
+        if (!isNaN(lat) && !isNaN(lon)) {
+            const marker = L.marker([lat, lon]).addTo(this.#map);
+            marker.bindPopup(`<strong>${point.nom}</strong><br>${point.direccio}`);
+            this.#markers.push(marker);
+
+            bounds.push([lat, lon]); // guardar posocio marker
+        } else {
+            console.warn(`Invalid coordinates for ${point.nom}: ${point.latitud}, ${point.longitud}`);
+        }
+    });
+
+    // Fit map to show all markers
+    if (bounds.length > 0) {
+        this.#map.fitBounds(bounds);
+    }
+
+    console.log("Markers added:", this.#markers.length);
+}
+
 
     async #getPosicioActual() {
         if (navigator.geolocation) {

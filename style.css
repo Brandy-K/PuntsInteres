@@ -155,14 +155,14 @@ body {
 }
 
 .delete-btn {
-    background: none;
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
     border: none;
-    color: red;
-    font-size: 16px;
     cursor: pointer;
 }
 
 .delete-btn:hover {
-    color: darkred;
+    background-color: darkred;
 }
-

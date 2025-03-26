@@ -31,25 +31,7 @@ const deletePoint = function (index) {
     displayPoints();
 };
 
-const displayPoints = function () {
-    const container = document.getElementById("pointsList");
-    container.innerHTML = ""; // Clear previous content
 
-    if (pointsOfInterest.length === 0) {
-        container.innerHTML = "<p class='no-info'>No hi ha informació per mostrar</p>";
-        return;
-    }
-
-    // Create a Set to store unique 'tipus' values
-    const uniqueTipus = new Set(pointsOfInterest.map(point => point.tipus));
-
-    uniqueTipus.forEach(tipus => {
-        const div = document.createElement("div");
-        div.className = "point-item";
-        div.innerHTML = `<strong>${tipus}</strong>`;
-        container.appendChild(div);
-    });
-};
 
 const mapa = new Mapa();
 
@@ -101,44 +83,116 @@ const readCSV = function (file) {
 
     reader.readAsText(file);
 };
+//mostar punts Interest
+const displayPoints = function () {
+    const container = document.getElementById("pointsList");
+    container.innerHTML = ""; // Clear previous
+
+    if (pointsOfInterest.length === 0) {
+        container.innerHTML = "<p class='no-info'>No hi ha informació per mostrar</p>";
+        return;
+    }
+
+    pointsOfInterest.forEach((point, index) => {
+        console.log(point);
+        const div = document.createElement("div");
+        div.className = `point-item ${point.tipus.toLowerCase()}`;
+
+        // info
+        let pointInfo = `
+            <strong>${point.nom}</strong>
+            <p>${point.ciutat} | Tipus: ${point.tipus}</p>
+        `;
+
+        if (point.tipus.toLowerCase() === "atraccio") {
+            pointInfo += `
+                <p>Horaris: ${point.preu} | Preu: ${point.preu === 0 ? "Entrada gratuïta" : `${point.preu.toFixed(2)} ${point.moneda ?? ""}`}</p>
+         
+            `;
+        }
+
+        if (point.tipus.toLowerCase() === "museu") {
+            pointInfo += `
+                <p>Horaris: ${point.puntuacio} | Preu: ${point.moneda}| Descripcio: ${point.puntuacio}</p>
+            `;
+        }
+
+        div.innerHTML = pointInfo + `
+            <button class="delete-btn" data-index="${index}">Delete</button>
+        `;
+
+        container.appendChild(div);
+
+        div.querySelector(".delete-btn").addEventListener("click", function () {
+            deletePoint(index);
+        });
+    });
+
+    mapa.mostrarPunts(pointsOfInterest);
+};
 
 const filterAndSort = function () {
     let filtered = [...pointsOfInterest];
 
-    // Filter by type
-    const selectedType = document.querySelector("#filterType").value;
-    if (selectedType !== "Tots") {
-        filtered = filtered.filter(p => p.tipus === selectedType);
-    }
-
     // Filter by name
-    const searchTerm = document.querySelector("#searchName").value.toLowerCase();
+    const searchTerm = document.querySelector("#search").value.toLowerCase();
     filtered = filtered.filter(p => p.nom.toLowerCase().includes(searchTerm));
 
-    // Sort
-    const order = document.querySelector("#sortOrder").value;
-    filtered.sort((a, b) => order === "Ascendent" ? a.nom.localeCompare(b.nom) : b.nom.localeCompare(a.nom));
-
-    // Display updated list
+    // Update the List
     displayFilteredPoints(filtered);
+
+    // update map to show filterd points only
+    mapa.mostrarPunts(filtered);
 };
 
 const displayFilteredPoints = function (filteredPoints) {
-    const listContainer = document.querySelector("#pointsList");
-    listContainer.innerHTML = "";
+    const container = document.getElementById("pointsList");
+    container.innerHTML = ""; // Clear previous
 
     if (filteredPoints.length === 0) {
-        listContainer.innerHTML = "<p>No hi ha informació a mostrar</p>";
+        container.innerHTML = "<p class='no-info'>No hi ha informació per mostrar</p>";
         return;
     }
 
-    filteredPoints.forEach(point => {
-        const item = document.createElement("div");
-        item.classList.add("point-item");
-        item.innerHTML = `<strong>${point.nom} - ${point.ciutat}</strong> | Tipus: ${point.tipus}`;
-        listContainer.appendChild(item);
+    filteredPoints.forEach((point, index) => {
+        const div = document.createElement("div");
+        div.className = `point-item ${point.tipus.toLowerCase()}`;
+
+        div.innerHTML = `
+            <strong>${point.nom}</strong>
+            <p>${point.ciutat} | Tipus: ${point.tipus}</p>
+            <button class="delete-btn" data-index="${index}">Delete</button>
+        `;
+
+        container.appendChild(div);
+
+        // Add an event listener for delete button
+        div.querySelector(".delete-btn").addEventListener("click", function () {
+            deletePoint(index);
+        });
     });
+
+    mapa.mostrarPunts(filteredPoints);
 };
+
+
+
+const displayPointsOnMap = function () {
+    if (!mapa) {
+        console.error("Map instance is not initialized.");
+        return;
+    }
+
+    if (!pointsOfInterest || pointsOfInterest.length === 0) {
+        console.warn("No points of interest available.");
+        return;
+    }
+
+    console.log("Displaying Points of Interest:", pointsOfInterest);
+
+    mapa.mostrarPunts(pointsOfInterest);
+};
+
 
 const getCountryInfo = async function (codi) {
     try {
@@ -169,3 +223,37 @@ const updateCountryInfo = async function (codi) {
         }
     }
 };
+function clearAll() {
+    // Clear the array of points
+    pointsOfInterest = [];
+
+    // Clear the displayed list
+    document.getElementById("pointsList").innerHTML = "<p class='no-info'>No hi ha informació per mostrar</p>";
+
+    // Reset el text de drop zone
+    document.querySelector('.dropZone').innerHTML = 'Arrossegar un fitxer CSV aquí per carregar la informació';
+
+    // Clear the search 
+    document.querySelector("#search").value = "";
+
+    document.querySelector("#tipus").value = "option1";
+    document.querySelector("#ordenacio").value = "asc";
+
+    mapa.borraPunt(); 
+
+}
+
+// Attach event listener to the "Netejar tot" button
+document.querySelector(".clear-button").addEventListener("click", clearAll);
+
+
+const setupEventListeners = function () {
+    document.querySelector("#search").addEventListener("input", filterAndSort);
+  
+};
+
+// Run the setup when the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", function () {
+    setupEventListeners();
+});
+
