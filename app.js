@@ -1,3 +1,4 @@
+
 const dropZoneObj = document.querySelector(".dropZone");
 dropZoneObj.addEventListener("dragover", function (event) {
     event.preventDefault();
@@ -27,13 +28,14 @@ const loadFile = function (files) {
 };
 
 const deletePoint = function (index) {
-    pointsOfInterest.splice(index, 1);
-    displayPoints();
+    pointsOfInterest.splice(index, 1); 
+    displayPoints(); 
+    updateTotalCount();  
 };
 
 
-
 const mapa = new Mapa();
+let pointsOfInterest = [];
 
 const readCSV = function (file) {
     const reader = new FileReader();
@@ -42,7 +44,7 @@ const readCSV = function (file) {
         const lines = csvContent.split("\n").slice(1);
         let codiPais = "";
         pointsOfInterest = []; // Reset list
-        let numId = 0
+        let numId = 0;
 
         for (let i = 0; i < lines.length; i++) {
             numId++;
@@ -74,6 +76,7 @@ const readCSV = function (file) {
         }
 
         displayPoints();
+        updateTotalCount(); 
         await updateCountryInfo(codiPais);
     };
 
@@ -83,6 +86,8 @@ const readCSV = function (file) {
 
     reader.readAsText(file);
 };
+
+
 //mostar punts Interest
 const displayPoints = function () {
     const container = document.getElementById("pointsList");
@@ -90,15 +95,14 @@ const displayPoints = function () {
 
     if (pointsOfInterest.length === 0) {
         container.innerHTML = "<p class='no-info'>No hi ha informació per mostrar</p>";
+        updateTotalCount();
         return;
     }
 
     pointsOfInterest.forEach((point, index) => {
-        console.log(point);
         const div = document.createElement("div");
         div.className = `point-item ${point.tipus.toLowerCase()}`;
 
-        // info
         let pointInfo = `
             <strong>${point.nom}</strong>
             <p>${point.ciutat} | Tipus: ${point.tipus}</p>
@@ -106,14 +110,13 @@ const displayPoints = function () {
 
         if (point.tipus.toLowerCase() === "atraccio") {
             pointInfo += `
-                <p>Horaris: ${point.preu} | Preu: ${point.preu === 0 ? "Entrada gratuïta" : `${point.preu.toFixed(2)} ${point.moneda ?? ""}`}</p>
-         
+                <p>Horaris: ${point.horaris} | Preu: ${point.preu === 0 ? "Entrada gratuïta" : `${point.preu.toFixed(2)} ${point.moneda ?? ""}`}</p>
             `;
         }
 
         if (point.tipus.toLowerCase() === "museu") {
             pointInfo += `
-                <p>Horaris: ${point.puntuacio} | Preu: ${point.moneda}| Descripcio: ${point.puntuacio}</p>
+                <p>Horaris: ${point.horaris} | Preu: ${point.preu} | Descripcio: ${point.descripcio}</p>
             `;
         }
 
@@ -122,9 +125,8 @@ const displayPoints = function () {
         `;
 
         container.appendChild(div);
-
         div.querySelector(".delete-btn").addEventListener("click", function () {
-            deletePoint(index);
+            deletePoint(parseInt(this.getAttribute("data-index")));
         });
     });
 
@@ -141,7 +143,7 @@ const filterAndSort = function () {
     // Update the List
     displayFilteredPoints(filtered);
 
-    // update map to show filterd points only
+    // update map to show filterd points
     mapa.mostrarPunts(filtered);
 };
 
@@ -166,7 +168,7 @@ const displayFilteredPoints = function (filteredPoints) {
 
         container.appendChild(div);
 
-        // Add an event listener for delete button
+        // event listener for delete button
         div.querySelector(".delete-btn").addEventListener("click", function () {
             deletePoint(index);
         });
@@ -232,18 +234,23 @@ function clearAll() {
 
     // Reset el text de drop zone
     document.querySelector('.dropZone').innerHTML = 'Arrossegar un fitxer CSV aquí per carregar la informació';
-
-    // Clear the search 
+    //clear search
     document.querySelector("#search").value = "";
 
     document.querySelector("#tipus").value = "option1";
     document.querySelector("#ordenacio").value = "asc";
 
     mapa.borraPunt(); 
+    displayPoints();
+updateTotalCount();
+
+
 
 }
+const updateTotalCount = function () {
+    document.querySelector("#total-label").textContent = `Número Total: ${pointsOfInterest.length}`;
+};
 
-// Attach event listener to the "Netejar tot" button
 document.querySelector(".clear-button").addEventListener("click", clearAll);
 
 
@@ -252,7 +259,6 @@ const setupEventListeners = function () {
   
 };
 
-// Run the setup when the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function () {
     setupEventListeners();
 });
